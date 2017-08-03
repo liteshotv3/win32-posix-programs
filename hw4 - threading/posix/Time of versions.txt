@@ -1,0 +1,37 @@
+real    0m0.165s
+
+user    0m0.004s
+
+sys     0m0.056s
+for 
+for 1 thread
+
+
+
+real    0m0.099s
+
+user	0m0.000s
+
+sys	0m0.032s
+
+for 2 thread
+
+
+
+real	0m0.110s
+
+user	0m0.008s
+
+sys	0m0.028s
+
+for 4 thread
+
+
+
+real	0m0.117s
+
+user	0m0.000s
+
+sys	0m0.040s
+
+for 8 thread

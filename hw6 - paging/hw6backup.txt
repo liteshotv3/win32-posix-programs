@@ -1,0 +1,148 @@
+/*********************************************************************\
+| Program : hw6.c                                                     |
+| Problem : Write a program that simulates FIFO(first in first out)   |
+|           and LRU (least recently used) page-replacement algorithms.|
+| Purpose : Demonstrate paging algorithms FIFO and LRU                |
+| Author  : Artem Tolstov                                             |
+| Date    : 4/21/2015                                                 |
+\*********************************************************************/
+#include <stdio.h>
+#include <string.h>
+#include <math.h.>
+
+//allows the use of 'int bool' type with true and false
+typedef int bool;
+#define false 0
+#define true 1
+
+void pageSwap(struct frame *currentFrame, int address);
+struct frame victimSelector(struct frame allocatedFrames[]);
+
+struct frame
+{
+	bool isEmpty;
+	int page;
+	int count;
+};
+
+int main(int argc, char *argv[])
+{
+	//declarations
+	int pageSize, memSize, framesNum, i, emptyLeft, nextValue, pageNumber, count, address;
+	struct frame *allocatedFrames;
+	char string[4];
+	struct frame victim;
+
+	pageSize = pow(2, atoi(argv[1]));
+	memSize = pow(2, atoi(argv[2]));
+	framesNum = atoi(argv[4]);
+	allocatedFrames = (struct frame*) malloc(sizeof(struct frame) * framesNum);
+	emptyLeft = framesNum;
+	count = 0;
+
+	//sets all .isEmpty in allocatedFrames[] as true
+	for(i = 0; i < framesNum; i++)
+	{
+		allocatedFrames[i].isEmpty = true;
+	}
+
+	//debug to see what is contained in our variables
+	
+	printf("pageSize = %d\nmemSize = %d\n", pageSize, memSize);
+	printf("algorithm = %s\n", argv[3]);
+	printf("frameNum = %d\n", framesNum);
+	
+	
+	//Decide if using LRU or FIFO algorithm
+	if (strcmp (argv[3], "LRU") == 0)
+	{
+		printf("string is LRU\n");
+	}
+	else if (strcmp(argv[3], "FIFO") == 0)
+	{
+		printf("string is FIFO\n");
+		//A loop keeps getting the next value
+		while(1)
+		{
+			printf("Enter next hex value: ");
+			scanf("%x", &address);
+			printf("Got %d\n", address);
+			count++;
+			if (count > 105)
+				break;
+			pageNumber = address/pageSize;
+			printf("pageNumber: %d\n", pageNumber);
+
+			//check if page is in frames
+			for(i = 0; i < framesNum; i++)
+			{
+				if ((allocatedFrames[i].isEmpty == false) && (allocatedFrames[i].page == pageNumber))
+				{
+					//do nothing
+				}
+			}
+		
+			//A victim is decided
+			//if emptyLeft > 0 execute for loop that finds empty frame
+			if(emptyLeft > 0)
+			{
+				for(i = 0; i < framesNum; i++)
+				{
+					if(allocatedFrames[i].isEmpty == true)
+					{
+						victim = allocatedFrames[i];
+						emptyLeft--;
+					}
+				}
+			}
+			//else execute victimSelector(), 
+			else
+			{
+				victim = victimSelector(allocatedFrames);
+			}
+			pageSwap(&victim, pageNumber);
+		
+		
+
+		//Victim is page swapped
+		pageSwap(&victim, address);
+			}
+
+		//check what is contained in frames
+		for(i = 0; i < framesNum; i++)
+		{
+			printf("allocatedFrames[%d]: isEmpty = %d ", i, allocatedFrames[i].isEmpty);
+			printf("page = %d ", allocatedFrames[i].page);
+			printf("count = %d\n", allocatedFrames[i].count);
+		}
+		
+	}
+	else {
+		printf("string is not valid input\n");
+	}
+	return 0;
+}
+
+void pageSwap(struct frame *currentFrame, int address)
+{
+	currentFrame->isEmpty = false;
+	currentFrame->page = address;
+    currentFrame->count = 0;
+	
+}
+
+struct frame victimSelector(struct frame allocatedFrames[])
+{
+	int i;
+	struct frame victim;
+	victim.count = 0;
+	for(i = 0; i < (sizeof(allocatedFrames)/sizeof(allocatedFrames[0])); i++)
+	{
+		if (victim.count < allocatedFrames[i].count)
+		{
+			victim = allocatedFrames[i];
+		}
+	}
+
+	return victim;
+}
