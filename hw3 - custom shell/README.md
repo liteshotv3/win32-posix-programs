@@ -1,4 +1,4 @@
-Homework 3 - Simple Shell<br>
+<h2>Homework 3 - Simple Shell</h2>
 Due by 7:00 p.m. Wednesday, 3/11/15<br>
 <p>
 For this assignment you will implement your own shell that runs on top of the regular command-line
